@@ -20,9 +20,9 @@ export const products: Product[] = [
       { size: 'XL', available: false },
     ],
     images: [
-      '/frontend/polo_eseentials_nba.jfif',
-      '/frontend/POLO_NBA_ESENTIALS_GRIS.png',
-      '/frontend/nba_polo_2.jpg',
+      '/polo_eseentials_nba.png',
+      '/POLO_NBA_ESENTIALS_GRIS.png',
+      '/nba_polo_2.jpg',
     ],
     description: 'Polo confeccionado en algodón pima de máxima calidad. Corte oversized contemporáneo. Construcción premium con costuras reforzadas. Silueta atemporal.',
   },
