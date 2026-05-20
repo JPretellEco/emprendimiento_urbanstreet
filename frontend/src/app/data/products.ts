@@ -20,7 +20,7 @@ export const products: Product[] = [
       { size: 'XL', available: false },
     ],
     images: [
-      'frontend\polo_eseentials_nba.jfif',
+      '/frontend/polo_eseentials_nba.jfif',
       'frontend\POLO_NBA_ESENTIALS_GRIS.png',
       'frontend\nba_polo_2.jpg',
     ],
