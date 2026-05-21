@@ -46,7 +46,7 @@ export const AIAssistant = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/chat', {
+      const response = await axios.post('https://chatbot-urbantstreet.onrender.com', {
         message: currentMessage,
       });
 
