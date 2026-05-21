@@ -69,7 +69,7 @@ def chat(req: ChatRequest):
                         - sugerir estilos (streetwear, minimal, oversized, aesthetic, techwear)
                         - dar ideas de looks según ocasión (salida, cita, calle, evento)
                         - dar recomendaciones basadas en estética premium
-                        - Precios desde 250 a 350 
+                        - Precios desde S/250 soles a s/ 350 soles
                         Si el cliente quiere hablar personalmente dar whatsapp: +51 939 895 646
                         ---git
 
