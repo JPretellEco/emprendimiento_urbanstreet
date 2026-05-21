@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
 import axios from 'axios';
 
@@ -21,35 +21,35 @@ export const AIAssistant = () => {
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // 🔥 SCROLL REF
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // 🔥 AUTO SCROLL
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSendMessage = async () => {
     if (!inputValue.trim() || loading) return;
 
     const currentMessage = inputValue.trim();
 
-    // Agregar mensaje usuario
     const userMessage: Message = {
       role: 'user',
       content: currentMessage,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
 
-    // Limpiar input
+    setMessages(updatedMessages);
     setInputValue('');
-
-    // Activar loading
     setLoading(true);
 
     try {
-      // Request al backend FastAPI
-      const response = await axios.post(
-        'http://127.0.0.1:8000/chat',
-        {
-          message: currentMessage,
-        }
-      );
+      const response = await axios.post('http://127.0.0.1:8000/chat', {
+        message: currentMessage,
+      });
 
-      // Mensaje IA
       const assistantMessage: Message = {
         role: 'assistant',
         content:
@@ -57,29 +57,21 @@ export const AIAssistant = () => {
           'No recibí respuesta del modelo.',
       };
 
-      setMessages((prev) => [
-        ...prev,
-        assistantMessage,
-      ]);
-
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error: any) {
-
       console.error('ERROR IA:', error);
 
       let errorMessage =
         'Hubo un problema conectando con la inteligencia artificial.';
 
-      // Error backend
-      if (error.response) {
-        errorMessage = `Error ${error.response.status}: ${
-          error.response.data?.detail || 'Backend'
-        }`;
-      }
-
-      // Error conexión
-      else if (error.request) {
-        errorMessage =
-          'No se pudo conectar con el servidor IA.';
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          errorMessage = `Error ${error.response.status}: ${
+            error.response.data?.detail || 'Backend error'
+          }`;
+        } else if (error.request) {
+          errorMessage = 'No se pudo conectar con el servidor IA.';
+        }
       }
 
       setMessages((prev) => [
@@ -91,7 +83,6 @@ export const AIAssistant = () => {
       ]);
     }
 
-    // Desactivar loading
     setLoading(false);
   };
 
@@ -119,7 +110,6 @@ export const AIAssistant = () => {
             <h3 className="text-sm tracking-[0.2em] uppercase font-medium">
               URBAN STREET AI
             </h3>
-
             <p className="text-[11px] text-gray-300 mt-1">
               Asistente inteligente de moda
             </p>
@@ -127,7 +117,6 @@ export const AIAssistant = () => {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#fafafa]">
-
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -153,27 +142,31 @@ export const AIAssistant = () => {
             {loading && (
               <div className="flex justify-start">
                 <div className="bg-white border border-gray-200 text-black px-4 py-3 rounded-2xl text-sm">
-                  Escribiendo...
+                  Pensando...
                 </div>
               </div>
             )}
 
+            {/* SCROLL ANCHOR */}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
           <div className="p-4 border-t border-gray-200 bg-white">
-
             <div className="flex items-center gap-2">
 
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === 'Enter' && handleSendMessage()
-                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
                 placeholder="Pregúntame sobre outfits..."
-                className="flex-1 px-4 py-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                className="flex-1 px-4 py-3 rounded-xl border border-gray-300 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
               />
 
               <button
@@ -186,7 +179,6 @@ export const AIAssistant = () => {
               </button>
 
             </div>
-
           </div>
 
         </div>

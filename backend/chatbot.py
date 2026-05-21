@@ -1,37 +1,16 @@
-import os
-
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
-from openai import OpenAI
 from dotenv import load_dotenv
+import os
+import requests
 
-# =========================================================
-# LOAD ENV
-# =========================================================
-
+# Cargar variables de entorno
 load_dotenv()
 
-xai_api_key = os.getenv("XAI_API_KEY")
+app = FastAPI()
 
-if not xai_api_key:
-    raise ValueError(
-        "No se encontró XAI_API_KEY en el archivo .env"
-    )
-
-# =========================================================
-# FASTAPI
-# =========================================================
-
-app = FastAPI(
-    title="Essentials Store AI Assistant"
-)
-
-# =========================================================
-# CORS
-# =========================================================
-
+# CORS (React)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -40,210 +19,140 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# =========================================================
-# CLIENTE XAI / GROK
-# =========================================================
+# API KEY GROQ
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-client = OpenAI(
-    api_key=xai_api_key,
-    base_url="https://api.x.ai/v1"
-)
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY no encontrada en .env")
 
-# =========================================================
-# REQUEST MODEL
-# =========================================================
-
+# Request schema (IMPORTANTE: SOLO message)
 class ChatRequest(BaseModel):
     message: str
 
-# =========================================================
-# SYSTEM PROMPT
-# =========================================================
-
-INFO_ESSENTIALS = """
-Eres el asistente oficial de una marca streetwear premium llamada Essentials.
-
-Tu objetivo es brindar una experiencia moderna, elegante y premium.
-
-Puedes:
-- recomendar outfits
-- recomendar hoodies
-- recomendar polos
-- recomendar shorts
-- sugerir combinaciones
-- ayudar con tallas
-- recomendar colores
-- sugerir looks oversize
-- responder dudas de moda urbana
-
-Estilo de respuesta:
-- moderno
-- elegante
-- minimalista
-- breve
-- premium
-- amigable
-
-Instrucciones:
-- responde siempre en español
-- respuestas cortas y claras
-- no escribas párrafos largos
-- habla como stylist premium
-- nunca digas que eres IA
-
-Colores recomendados:
-- negro
-- beige
-- blanco
-- gris
-- tonos neutros
-
-Ejemplo:
-"Te recomendaría una hoodie oversize negra con shorts beige para un look clean y moderno."
-"""
-
-# =========================================================
-# HOME
-# =========================================================
-
-@app.get("/")
-def home():
-
-    return {
-        "estado": "ACTIVO",
-        "mensaje": "Essentials AI con Grok funcionando 🔥",
-        "modelo": "grok-4"
-    }
-
-# =========================================================
-# CHAT
-# =========================================================
 
 @app.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+def chat(req: ChatRequest):
 
     try:
-
-        # ============================================
-        # VALIDAR MENSAJE
-        # ============================================
-
-        user_message = request.message.strip()
-
-        if not user_message:
-
-            return {
-                "response": "Escríbeme algo para ayudarte con tu outfit 🔥"
-            }
-
-        # ============================================
-        # MENSAJES
-        # ============================================
-
-        messages = [
-
-            {
-                "role": "system",
-                "content": INFO_ESSENTIALS
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
             },
+            json={
+                "model": "llama-3.1-8b-instant",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": """
+                        Eres el asistente oficial de una marca streetwear premium llamada URBAN STREET.
+                        Una marca que nace del emprendimiento de unos jovenes estudiantes de la Universidad 
+                        Nacional de Trujillo.
 
-            {
-                "role": "user",
-                "content": user_message
+                        Tu rol es el de un stylist digital y asesor de moda urbana de alto nivel.
+
+                        Tu objetivo principal es:
+                        - ayudar a los usuarios a vestir mejor
+                        - recomendar outfits completos
+                        - aumentar la intención de compra
+                        - actuar como asesor de estilo premium
+
+                        ---
+
+                        🧠 LO QUE PUEDES HACER:
+                        - recomendar outfits completos (solo tenemos hoodies, polos y short) plomos y negros
+                        - recomendar hoodies, polos, shorts y prendas streetwear
+                        - sugerir combinaciones de outfits
+                        - ayudar con tallas y fit (oversize, regular, slim)
+                        - recomendar colores y paletas
+                        - sugerir estilos (streetwear, minimal, oversized, aesthetic, techwear)
+                        - dar ideas de looks según ocasión (salida, cita, calle, evento)
+                        - dar recomendaciones basadas en estética premium
+                        - Precios desde 250 a 350 
+                        Si el cliente quiere hablar personalmente dar whatsapp: +51 939 895 646
+                        ---
+
+                        🚫 LO QUE NO PUEDES HACER:
+                        - no responder matemáticas
+                        - no responder programación
+                        - no responder cultura general
+                        - no resolver ejercicios
+                        - no dar información fuera de moda o ropa
+
+                        Si el usuario pregunta algo fuera de moda, responde exactamente:
+                        "Solo puedo ayudarte con moda urbana y productos de URBAN STREET."
+
+                        ---
+
+                        🎯 ESTILO DE RESPUESTA:
+                        - moderno
+                        - minimalista
+                        - elegante
+                        - premium
+                        - breve (máximo 2–3 líneas)
+                        - directo
+                        - sin explicaciones largas
+                        - sin párrafos extensos
+
+                        ---
+
+                        💬 TONO:
+                        Hablas como un stylist de marca de lujo streetwear.
+                        Eres seguro, limpio y aspiracional.
+
+                        ---
+
+                        🚫 REGLAS CRÍTICAS:
+                        - nunca digas que eres una IA
+                        - nunca uses lenguaje técnico
+                        - nunca des respuestas largas
+                        - nunca te salgas de moda urbana
+                        - nunca resuelvas temas externos
+
+                        ---
+
+                        🎨 PALETA DE ESTILO URBANT STREET:
+                        - negro
+                        - blanco
+                        - beige
+                        - gris
+                        - tonos neutros
+                        - estética minimal / luxury streetwear
+
+                        ---
+
+                        ✨ EJEMPLO DE RESPUESTA IDEAL:
+
+                        "Te recomiendo una hoodie oversized negra con pantalón beige relaxed y sneakers blancos. Un look limpio, moderno y premium."
+                        """
+                    },
+                    {
+                        "role": "user",
+                        "content": req.message
+                    }
+                ],
+                "temperature": 0.7,
+                "max_tokens": 300
             }
-
-        ]
-
-        # ============================================
-        # RESPUESTA GROK
-        # ============================================
-
-        completion = client.chat.completions.create(
-
-            model="grok-4",
-
-            messages=messages,
-
-            temperature=0.7,
-
-            max_tokens=200
         )
 
-        # ============================================
-        # RESPUESTA TEXTO
-        # ============================================
+        data = response.json()
 
-        response_text = completion.choices[0].message.content
-
-        # ============================================
-        # VALIDAR RESPUESTA
-        # ============================================
-
-        if not response_text:
-
-            response_text = (
-                "No pude generar una recomendación ahora mismo."
-            )
+        # 🔥 control de error real de API
+        if "choices" not in data:
+            return {
+                "success": False,
+                "error": data
+            }
 
         return {
-            "response": response_text
+            "success": True,
+            "response": data["choices"][0]["message"]["content"]
         }
 
     except Exception as e:
-
-        print("ERROR IA:", str(e))
-
-        error_text = str(e)
-
-        # ============================================
-        # API KEY INVÁLIDA
-        # ============================================
-
-        if "401" in error_text:
-
-            return {
-                "response": (
-                    "La API KEY de Grok es inválida o expiró."
-                )
-            }
-
-        # ============================================
-        # RATE LIMIT
-        # ============================================
-
-        if "429" in error_text:
-
-            return {
-                "response": (
-                    "Estamos teniendo muchas consultas simultáneas. "
-                    "Intenta nuevamente en unos momentos."
-                )
-            }
-
-        # ============================================
-        # MODELO NO DISPONIBLE
-        # ============================================
-
-        if "model" in error_text.lower():
-
-            return {
-                "response": (
-                    "El modelo Grok no está disponible temporalmente."
-                )
-            }
-
-        # ============================================
-        # ERROR GENERAL
-        # ============================================
-
-        return {
-            "response": (
-                "La inteligencia artificial está temporalmente ocupada."
-            )
-        }
-
-# =========================================================
-# START MESSAGE
-# =========================================================
-
-print("Essentials AI con Grok cargado correctamente 🔥")
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
