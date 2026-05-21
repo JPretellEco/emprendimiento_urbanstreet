@@ -82,7 +82,7 @@ export const products: Product[] = [
   // hoodies (T-SHIRTS)
   {
     id: '9',
-    name: 'Polera Basic Negro',
+    name: 'Fear of God Essentials Arched Logo Pullover "Ink',
     category: 'hoodies',
     price: 220.00,
     slug: 'polera-basic-negro',
@@ -98,14 +98,16 @@ export const products: Product[] = [
       { size: 'XL', available: true },
     ],
     images: [
-      'https://images.unsplash.com/photo-1552571072-0eadf8e3953c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      'https://images.unsplash.com/photo-1595188525947-4ba148279529?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      '/HODDIE1_1.png',
+      '/hooddie1_2.png',
+      '/hoddi1_3.png',
+      '/hoddi1_4.png'
     ],
     description: 'La esencia del minimalismo. Algodón premium de peso pesado. Construcción sin etiquetas exteriores. Básico perfeccionado.',
   },
   {
     id: '10',
-    name: 'Polera Street Style',
+    name: 'Fear of God Essentials Pullover Hoodie Black',
     category: 'hoodies',
     price: 240.00,
     slug: 'polera-street-style',
@@ -119,52 +121,12 @@ export const products: Product[] = [
       { size: 'XL', available: false },
     ],
     images: [
-      'https://images.unsplash.com/photo-1595188525947-4ba148279529?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      'https://images.unsplash.com/photo-1759596450534-0a960be607e1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      '/hoddi2_1.png',
+      '/hoddi2_2.png',
+      '/hoddi2_3.png',
+      '/hoddie2_4.jpg'
     ],
     description: 'Interpretación contemporánea del básico esencial. Tejido suave al tacto con caída natural. Atención al detalle en cada elemento.',
-  },
-  {
-    id: '11',
-    name: 'Polera Premium',
-    category: 'hoodies',
-    price: 260.00,
-    slug: 'polera-premium',
-    colors: [
-      { name: 'Azul', hex: '#4169E1', available: true },
-      { name: 'Verde', hex: '#90EE90', available: true },
-    ],
-    sizes: [
-      { size: 'S', available: true },
-      { size: 'M', available: true },
-      { size: 'L', available: true },
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1740711152088-88a009e877bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      'https://images.unsplash.com/photo-1777793299588-8055f47cd20e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    ],
-    description: 'Diseño limpio con materiales excepcionales. Corte refinado oversized. Calidad superior en cada puntada. Lujo silencioso.',
-  },
-  {
-    id: '12',
-    name: 'Polera Summer',
-    category: 'hoodies',
-    price: 230.00,
-    slug: 'polera-summer',
-    colors: [
-      { name: 'Beige', hex: '#F5F5DC', available: true },
-      { name: 'Blanco', hex: '#FFFFFF', available: true },
-    ],
-    sizes: [
-      { size: 'M', available: true },
-      { size: 'L', available: true },
-      { size: 'XL', available: true },
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1778530207696-ea08486320d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      'https://images.unsplash.com/photo-1778530207547-04ad4aa9632a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-    ],
-    description: 'Ligereza y calidad en perfecta armonía. Tejido transpirable de verano. Silueta relajada con proporción estudiada. Simplicidad refinada.',
   },
 ];
 
