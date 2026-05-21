@@ -71,7 +71,7 @@ def chat(req: ChatRequest):
                         - dar recomendaciones basadas en estética premium
                         - Precios desde 250 a 350 
                         Si el cliente quiere hablar personalmente dar whatsapp: +51 939 895 646
-                        ---
+                        ---git
 
                         🚫 LO QUE NO PUEDES HACER:
                         - no responder matemáticas
